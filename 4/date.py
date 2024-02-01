@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 
 current = datetime.now()
 
+
+
 # 1 Write a Python program to subtract five days from current date.
 
 # five = current - timedelta(days = 5)
