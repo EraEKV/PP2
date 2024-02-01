@@ -42,3 +42,18 @@
 # 8
 # fruits = ["apple", "banana", "cherry"]
 # print(len(fruits))
+
+
+
+# Examples
+
+# fruits = ["apple", "banana", "cherry"]
+# fruits.append("orange")
+# fruits.remove("banana")
+# fruits.pop(1)
+# fruits.sort(reverse = True)
+# newlist = [x for x in fruits if "a" in x]
+# li = list(fruits)
+# li.extend(newlist)
+# fruits.clear()
+

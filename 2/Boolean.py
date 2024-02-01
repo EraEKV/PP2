@@ -16,3 +16,12 @@
 
 # 5
 # bool(0) => False
+
+
+
+
+# Examples
+
+# print(bool())
+# print(bool(-1))
+# print(bool(None))

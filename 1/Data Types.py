@@ -38,3 +38,16 @@ print(type(x))
 x = True
 print(type(x))
 # bool
+
+
+
+# sequence type
+# x = ["apple", "banana", "cherry"]	   # list	
+# x = ("apple", "banana", "cherry")	   # tuple	
+# x = range(6)	                       # range	
+
+# mapping type
+# x = {"name" : "John", "age" : 36}	   # dict	
+
+# set type
+# x = {"apple", "banana", "cherry"}    # set
