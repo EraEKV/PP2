@@ -46,8 +46,6 @@
 # numbers = input().split(" ")
 # print(filter_prime(numbers))
 
-# test
-
 
 
 
