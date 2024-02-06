@@ -136,7 +136,11 @@ movies = [
 
 # def av_cat(categ):
 #     count = 0
+#     score = 0
 #     for i in movies:
 #         if i["category"] == categ:
-#             count += i["imdb"]
-#     return count / len(movies)
+#             score += i["imdb"]
+#             count += 1
+#     return score / count
+
+# print(av_cat("Thriller"))
