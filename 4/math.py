@@ -8,13 +8,13 @@ import math
 
 
 
-# 2 Write a Python program to calculate the area of a polygon.
+# 2 Write a Python program to calculate the area of a trapezoid.
 
 # h = int(input("Height: "))
 # a = int(input("Base, first value: "))
 # b = int(input("Base, second value: "))
 # A = (a + b) / 2 * h
-# print("The area of the polygon is:", A)
+# print("The area of the trapezoid is:", A)
 
 
 
