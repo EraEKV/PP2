@@ -8,7 +8,7 @@ def matching(pattern, text):
 
 
 def replacing(pattern, text, replace):
-    print(sub(pattern, replace, text))
+    print(sub(pattern, replace, text).strip())
     
 
 def splitting(pattern, text):
