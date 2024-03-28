@@ -1,0 +1,279 @@
+import random
+import sys
+import time
+import pygame
+
+difficulty = 15
+
+# Window size
+WIDTH = 720
+HEIGHT = 480
+
+# Checks for errors encountered
+check_errors = pygame.init()
+# pygame.init() example output -> (6, 0)
+# second number in tuple gives number of errors
+if check_errors[1] > 0:
+    print(f'[!] Had {check_errors[1]} errors when initialising game, exiting...')
+    sys.exit(-1)
+else:
+    print('[+] Game successfully initialised')
+
+
+# Initialise game window
+pygame.display.set_caption('Snake Pro')
+game_window = pygame.display.set_mode((WIDTH, HEIGHT))
+
+
+# Fonts
+font1 = 'consolas'
+font2 = 'time new roman'
+
+# Colors 
+black = pygame.Color(0, 0, 0)
+white = pygame.Color(255, 255, 255)
+red = pygame.Color(255, 0, 0)
+green = pygame.Color(0, 255, 0)
+blue = pygame.Color(0, 0, 255)
+
+
+# FPS 
+FPS = pygame.time.Clock()
+
+
+# Game variables
+snake_pos = [100, 50]
+snake_body = [[100, 50], [100-10, 50], [100-(2*10), 50]]
+
+food_pos = [random.randrange(1, (WIDTH//10)) * 10, random.randrange(1, (HEIGHT//10)) * 10]
+food_spawn = True
+
+direction = 'RIGHT'
+change_to = direction
+
+score = 0
+level = 1
+
+
+
+class Game():
+  def __init__(self):
+    self.score = 0
+    self.level = 1
+
+    self.food_pos = [random.randrange(1, (WIDTH//10)) * 10, random.randrange(1, (HEIGHT//10)) * 10]
+    self.food_spawn = True
+
+    # Fonts
+    self.font1 = 'consolas'
+    self.font2 = 'time new roman'
+    
+    # Colors 
+    self.black = pygame.Color(0, 0, 0)
+    self.white = pygame.Color(255, 255, 255)
+    self.red = pygame.Color(255, 0, 0)
+    self.green = pygame.Color(0, 255, 0)
+    self.blue = pygame.Color(0, 0, 255)
+
+  def show_score(self):
+    score_font = pygame.font.SysFont(self.font1, 20)
+    score_surface = score_font.render('Score : ' + str(self.score), True, self.green)
+    score_rect = score_surface.get_rect()
+    game_window.blit(score_surface, score_rect)
+  
+  def game_over(self):
+    my_font = pygame.font.SysFont(font2, 90)
+    game_over_surface = my_font.render('YOU DIED', True, red)
+    game_over_rect = game_over_surface.get_rect()
+    game_over_rect.midtop = (WIDTH/2, HEIGHT/4)
+    game_window.fill(black)
+    game_window.blit(game_over_surface, game_over_rect)
+    show_score(0, red, 'times', 20)
+    pygame.display.flip()
+    time.sleep(1.5)
+    pygame.quit()
+    sys.exit()
+
+# Snake object
+class Snake(pygame.sprite.Sprite, Game):
+  def __init__(self):
+    super().__init__()
+    self.image = pygame.Surface([10, 10])
+    self.image.fill(green)
+    self.rect = self.image.get_rect()
+    self.snake_pos = [100, 50]
+    self.snake_body = [[100, 50], [100-10, 50], [100-(2*10), 50]]
+    self.rect.x = snake_pos[0]
+    self.rect.y = snake_pos[1]
+    self.direction = "RIGHT"
+    self.change_to = "RIGHT"
+
+  def check_event(self, event) -> None:
+    if event == pygame.K_UP or event == ord('w'):
+      self.change_to = 'UP'
+    if event == pygame.K_DOWN or event == ord('s'):
+      self.change_to = 'DOWN'
+    if event == pygame.K_LEFT or event == ord('a'):
+      self.change_to = 'LEFT'
+    if event == pygame.K_RIGHT or event == ord('d'):
+      self.change_to = 'RIGHT'
+    if event == pygame.K_ESCAPE:
+      pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+  def check_direction(self) -> None:
+    # Snake can't crash into itself on opposite direction
+    if change_to == 'UP' and self.direction != 'DOWN':
+        self.direction = 'UP'
+    if change_to == 'DOWN' and self.direction != 'UP':
+        self.direction = 'DOWN'
+    if change_to == 'LEFT' and self.direction != 'RIGHT':
+        self.direction = 'LEFT'
+    if change_to == 'RIGHT' and self.direction != 'LEFT':
+        self.direction = 'RIGHT'
+
+    if direction == 'UP':
+      snake_pos[1] -= 10
+    if direction == 'DOWN':
+      snake_pos[1] += 10
+    if direction == 'LEFT':
+      snake_pos[0] -= 10
+    if direction == 'RIGHT':
+      snake_pos[0] += 10
+
+  def snake_growing(self) -> None:
+    snake_body.insert(0, list(snake_pos))
+    global score, food_spawn
+    if snake_pos[0] == food_pos[0] and snake_pos[1] == food_pos[1]:
+        score += 1
+        food_spawn = False
+    else:
+        snake_body.pop()
+
+# Game Over
+def game_over():
+    my_font = pygame.font.SysFont(font2, 90)
+    game_over_surface = my_font.render('YOU DIED', True, red)
+    game_over_rect = game_over_surface.get_rect()
+    game_over_rect.midtop = (WIDTH/2, HEIGHT/4)
+    game_window.fill(black)
+    game_window.blit(game_over_surface, game_over_rect)
+    show_score(0, red, 'times', 20)
+    pygame.display.flip()
+    time.sleep(1.5)
+    pygame.quit()
+    sys.exit()
+
+
+def show_score(choice, color, font, size):
+    score_font = pygame.font.SysFont(font, size)
+    score_surface = score_font.render('Score: ' + str(score), True, color)
+    score_rect = score_surface.get_rect()
+    score_rect.topleft = (10, 10) 
+    if choice == 1:
+      score_rect.midtop = (WIDTH/10, 15)
+    else:
+      score_rect.midtop = (WIDTH/2, HEIGHT/1.25)
+    game_window.blit(score_surface, score_rect)
+    pygame.display.update()  
+    # pygame.display.update(score_rect)
+
+# Level
+# def show_lvl(color, font, size):
+#     global score, difficulty, level
+#     level_font = pygame.font.SysFont(font, size)
+#     level_surface = level_font.render('Level: ' + str(level), True, color)
+#     level_rect = level_surface.get_rect()
+#     level_rect.topright = (WIDTH - 10, 10)
+#     game_window.blit(level_surface, level_rect)
+#     pygame.display.update()  
+#     if score % 6 == 0 and score != 0:
+#         score += 1
+#         difficulty = 2
+#         level += 1
+
+
+
+game = Game()
+snake = Snake()
+
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        elif event.type == pygame.KEYDOWN:
+            # if event.key == pygame.K_UP or event.key == ord('w'):
+            #     change_to = 'UP'
+            # if event.key == pygame.K_DOWN or event.key == ord('s'):
+            #     change_to = 'DOWN'
+            # if event.key == pygame.K_LEFT or event.key == ord('a'):
+            #     change_to = 'LEFT'
+            # if event.key == pygame.K_RIGHT or event.key == ord('d'):
+            #     change_to = 'RIGHT'
+            # if event.key == pygame.K_ESCAPE:
+            #     pygame.event.post(pygame.event.Event(pygame.QUIT))
+          snake.check_event(event.key)
+    changed_rects = []
+
+    # # Snake can't crash into itself on opposite direction
+    # if change_to == 'UP' and direction != 'DOWN':
+    #     direction = 'UP'
+    # if change_to == 'DOWN' and direction != 'UP':
+    #     direction = 'DOWN'
+    # if change_to == 'LEFT' and direction != 'RIGHT':
+    #     direction = 'LEFT'
+    # if change_to == 'RIGHT' and direction != 'LEFT':
+    #     direction = 'RIGHT'
+
+    # # Moving logic
+    # if direction == 'UP':
+    #     snake_pos[1] -= 10
+    # if direction == 'DOWN':
+    #     snake_pos[1] += 10
+    # if direction == 'LEFT':
+    #     snake_pos[0] -= 10
+    # if direction == 'RIGHT':
+    #     snake_pos[0] += 10
+
+    snake.check_direction()
+
+    # Snake growing
+    snake_body.insert(0, list(snake_pos))
+    if snake_pos[0] == food_pos[0] and snake_pos[1] == food_pos[1]:
+        score += 1
+        food_spawn = False
+    else:
+        snake_body.pop()
+
+    # Spawn food
+    if not food_spawn:
+        food_pos = [random.randrange(1, (WIDTH // 10)) * 10, random.randrange(1, (HEIGHT // 10)) * 10]
+    food_spawn = True
+
+    # GFX
+    show_score(1, white, font1, 20)
+    # show_lvl(white, 'consolas', 20)
+    game_window.fill(black)
+    for pos in snake_body:
+        # Snake body
+        # .draw.rect(play_surface, color, xy-coordinate)
+        # xy-coordinate -> .Rect(x, y, size_x, size_y)
+        changed_rects.append(pygame.draw.rect(game_window, green, pygame.Rect(pos[0], pos[1], 10, 10)))
+
+    # Snake food
+    changed_rects.append(pygame.draw.rect(game_window, white, pygame.Rect(food_pos[0], food_pos[1], 10, 10)))
+
+    # Game Over conditions
+    if snake_pos[0] < 0 or snake_pos[0] > WIDTH - 10:
+        game_over()
+    if snake_pos[1] < 0 or snake_pos[1] > HEIGHT - 10:
+        game_over()
+    # Snake crashes into itself
+    for block in snake_body[1:]:
+        if snake_pos[0] == block[0] and snake_pos[1] == block[1]:
+            game_over()
+
+    pygame.display.update(changed_rects)
+    # pygame.display.update()
+    FPS.tick(difficulty)
