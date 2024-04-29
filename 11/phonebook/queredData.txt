@@ -1,0 +1,3 @@
+id: 26, name: Erasyl K., phone: +7747421####
+id: 23, name: Nurasyl D., phone: +7747421####
+id: 24, name: Daulet K., phone: +7747421####

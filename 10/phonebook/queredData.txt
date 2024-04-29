@@ -1,4 +1,3 @@
-Name: PersonName
-Number: PhoneNumber
-Name: Askar
-Number: 87078300272
+Name: Nurasyl D., phone: +77474210408
+Name: Erasyl K., phone: +77474210407
+Name: Daulet K., phone: +77474210407
